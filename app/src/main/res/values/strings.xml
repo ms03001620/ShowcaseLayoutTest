@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">ShowcaseLayoutTest</string>
+
+    <string name="content_1">Tango is a platform that uses computer vision to give devices the ability to understand their position relative to the world aro</string>
+    <string name="content_2">Try it in just three simple steps! \n1.Tap here to create your message</string>
+</resources>
