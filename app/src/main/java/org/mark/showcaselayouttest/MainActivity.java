@@ -1,18 +1,13 @@
 package org.mark.showcaselayouttest;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 
-import static org.mark.showcaselayouttest.HintShowcaseDrawer.BELOW_SHOWCASE;
-
 public class MainActivity extends AppCompatActivity {
-    ShowcaseLayout layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,33 +19,16 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //Toast.makeText(v.getContext(), "click", Toast.LENGTH_SHORT).show();
                 Log.v("MainActivity", "ddddd");
-                layout.setDisplay(true);
+                ((ShowcaseLayout)findViewById(R.id.layout)).setDisplay(true);
             }
         });
 
+        changePostion();
+    }
 
-        layout = (ShowcaseLayout)findViewById(R.id.layout);
-
-        ViewGroup parent = (ViewGroup) findViewById(android.R.id.content);
-        ViewGroup group = (ViewGroup) parent.getParent().getParent();
-        int count = group.getChildCount();
-
-        layout.setShowcaseDrawer(new HintShowcaseDrawer(MainActivity.this,
-                R.string.content_2,
-                BELOW_SHOWCASE,
-                R.dimen.hint_bg_width,
-                R.dimen.hint_text_size,
-                R.dimen.btn_width,
-                R.dimen.btn_width),
-                R.id.btn);
-
-        layout.setParent(group, count);
-
-
+    private void changePostion() {
         final Button btn = (Button) findViewById(R.id.btn);
         final RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) btn.getLayoutParams();
-
-
         btn.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -58,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
                 btn.setLayoutParams(lp);
             }
         }, 5000);
-
     }
 
 }

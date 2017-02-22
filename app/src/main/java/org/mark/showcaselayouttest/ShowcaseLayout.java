@@ -1,29 +1,28 @@
 package org.mark.showcaselayouttest;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import static android.view.MotionEvent.ACTION_UP;
+import static org.mark.showcaselayouttest.HintShowcaseDrawer.BELOW_SHOWCASE;
 
 public class ShowcaseLayout extends FrameLayout {
     private Context mContext;
     private View mTarget;
     private boolean mDisplay;
     private StatusBarHelper mStatusBarHelper;
+    private HintShowcaseDrawer mShowcaseDrawer;
+    private Bitmap mBitmapBuffer;
 
-    private HintShowcaseDrawer showcaseDrawer;
-    private Bitmap bitmapBuffer;
+    private int id;
 
     public ShowcaseLayout(Context context) {
         this(context, null);
@@ -35,9 +34,21 @@ public class ShowcaseLayout extends FrameLayout {
 
     public ShowcaseLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        long start = System.currentTimeMillis();
         mContext = context;
         mDisplay = true;
         mStatusBarHelper = new StatusBarHelper(context);
+
+        mShowcaseDrawer = new HintShowcaseDrawer(context,
+                R.string.content_2,
+                BELOW_SHOWCASE,
+                R.dimen.hint_bg_width,
+                R.dimen.hint_text_size,
+                R.dimen.btn_width,
+                R.dimen.btn_width);
+
+        id = R.id.btn;
+        Log.v("ShowcaseLayout", "pass:" + (System.currentTimeMillis() - start));
     }
 
 
@@ -50,14 +61,28 @@ public class ShowcaseLayout extends FrameLayout {
     }
 
     @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        Log.v("ShowcaseLayout", "onLayout bottom:" + bottom);
+        if (mTarget == null) {
+            mTarget = findViewById(id);
+        }
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        Log.v("ShowcaseLayout", "onMeasure getMeasuredHeight:" + getMeasuredHeight());
+    }
+
+    @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         if (!mDisplay) {
             return super.dispatchTouchEvent(ev);
         }
 
-        View view = findViewById(id);
-        if (view != null) {
-            if (containsView(view, ev)) {
+        if (mTarget != null) {
+            if (containsView(mTarget, ev)) {
                 onTouch(ev, true);
                 return super.dispatchTouchEvent(ev);
             }
@@ -81,6 +106,34 @@ public class ShowcaseLayout extends FrameLayout {
         }
     }
 
+    public void dispatchDraw(Canvas canvas) {
+        super.dispatchDraw(canvas);
+
+        if (!isInEditMode()) {
+            if (mDisplay) {
+                canvas.save();
+                float x = mTarget.getX();
+                float y = mTarget.getY();
+
+                Rect targetRect = new Rect();
+
+                mTarget.getDrawingRect(targetRect);
+
+                if (mBitmapBuffer == null) {
+                    mBitmapBuffer = Bitmap.createBitmap(getMeasuredWidth(), getMeasuredHeight(), Bitmap.Config.ARGB_4444);
+                }
+
+                mShowcaseDrawer.erase(mBitmapBuffer);
+                mShowcaseDrawer.drawShowcase(mBitmapBuffer, x + targetRect.centerX(), y + targetRect.centerY(), 1f);
+                mShowcaseDrawer.drawToCanvas(canvas, mBitmapBuffer);
+                canvas.restore();
+                mStatusBarHelper.tintStatusBar(mShowcaseDrawer.getBaseColor());
+            } else {
+                mStatusBarHelper.unTintStatusBar();
+            }
+        }
+    }
+
     private boolean containsView(@NonNull View view, @NonNull MotionEvent ev) {
         Rect rect = new Rect();
         view.getHitRect(rect);
@@ -88,66 +141,5 @@ public class ShowcaseLayout extends FrameLayout {
         float y = ev.getY();
         boolean inRect = rect.contains((int) x, (int) y);
         return inRect;
-    }
-
-
-    private int id;
-
-    public void setShowcaseDrawer(HintShowcaseDrawer showcaseDrawer, @IdRes int id) {
-        this.showcaseDrawer = showcaseDrawer;
-        this.id = id;
-    }
-
-
-    public void setParent(ViewGroup parent, int index) {
-
-
-
-
-        ViewGroup view = (ViewGroup) parent.getChildAt(0);
-        ViewGroup dddd = (ViewGroup) this.getParent();
-        dddd.removeView(this);
-        View viewdddd = this.getChildAt(0);
-        this.removeView(viewdddd);
-        dddd.addView(viewdddd);
-        parent.removeView(view);
-        this.addView(view);
-        parent.addView(this, 0);
-    }
-
-
-    private void updateBitmap() {
-        if (bitmapBuffer == null) {
-            if (bitmapBuffer != null) {
-                bitmapBuffer.recycle();
-            }
-            bitmapBuffer = Bitmap.createBitmap(getMeasuredWidth(), getMeasuredHeight(), Bitmap.Config.ARGB_8888);
-        }
-    }
-
-
-    public void dispatchDraw(Canvas canvas) {
-        super.dispatchDraw(canvas);
-
-        if (!isInEditMode()) {
-            if (mDisplay) {
-                canvas.save();
-                if (mTarget == null) {
-                    mTarget = findViewById(id);
-                }
-
-                Rect targetRect = new Rect();
-                mTarget.getGlobalVisibleRect(targetRect);
-
-                updateBitmap();
-                showcaseDrawer.erase(bitmapBuffer);
-                showcaseDrawer.drawShowcase(bitmapBuffer, targetRect.left + targetRect.width() / 2, targetRect.top, 1f);
-                showcaseDrawer.drawToCanvas(canvas, bitmapBuffer);
-                canvas.restore();
-                mStatusBarHelper.tintStatusBar(showcaseDrawer.getBaseColor());
-            } else {
-                mStatusBarHelper.unTintStatusBar();
-            }
-        }
     }
 }
