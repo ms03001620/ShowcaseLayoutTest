@@ -8,6 +8,7 @@
         <attr name="text" format="string" />
         <attr name="textSize" format="dimension" />
         <attr name="textBoxMaxWidth" format="dimension" />
+        <attr name="canceledOnTouchOutside" format="boolean" />
 
         <attr name="direction">
 <!--            <enum name="unknown" value="-1" />
@@ -25,25 +26,3 @@
     </declare-styleable>
 
 </resources>
-
-
-<!--
-    * @attr ref android.support.v7.appcompat.R.styleable#SwitchCompat_android_textOn
-    * @attr ref android.support.v7.appcompat.R.styleable#SwitchCompat_android_textOff
-    * @attr ref android.support.v7.appcompat.R.styleable#SwitchCompat_switchMinWidth
-    * @attr ref android.support.v7.appcompat.R.styleable#SwitchCompat_switchPadding
-    * @attr ref android.support.v7.appcompat.R.styleable#SwitchCompat_switchTextAppearance
-    * @attr ref android.support.v7.appcompat.R.styleable#SwitchCompat_android_thumb
-    * @attr ref android.support.v7.appcompat.R.styleable#SwitchCompat_thumbTextPadding
-
-    * @attr ref android.support.v7.appcompat.R.styleable#SwitchCompat_track
-
-            <item name="track">@drawable/track</item>
-        <item name="android:thumb">@drawable/thumb</item>
-        <item name="android:textOn">@drawable/ico_toggle_chat</item>
-        <item name="android:textOff">@drawable/ico_toggle_feed</item>
-        <item name="switchTextAppearance">@drawable/indicator</item>
-        <item name="thumbTintMode">src_atop</item>
-        <item name="switchMinWidth">130dp</item>
-
-    -->

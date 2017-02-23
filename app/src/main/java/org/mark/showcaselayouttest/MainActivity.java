@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        findViewById(R.id.btn).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.text_hello).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Toast.makeText(v.getContext(), "click", Toast.LENGTH_SHORT).show();
@@ -24,11 +24,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //changePostion();
+        changePostion();
     }
 
     private void changePostion() {
-        final View btn = (View) findViewById(R.id.btn);
+        final View btn = (View) findViewById(R.id.fab);
         final RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) btn.getLayoutParams();
         btn.postDelayed(new Runnable() {
             @Override

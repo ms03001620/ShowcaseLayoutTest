@@ -1,5 +1,6 @@
 package org.mark.showcase;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -24,6 +25,7 @@ public class ShowcaseLayout extends FrameLayout {
     private StatusBarHelper mStatusBarHelper;
     private HintShowcaseDrawer mShowcaseDrawer;
     private Bitmap mBitmapBuffer;
+    private boolean mCanceledOnTouchOutside;
 
     private final int id;
 
@@ -42,6 +44,7 @@ public class ShowcaseLayout extends FrameLayout {
         Resources resources = context.getResources();
         mStatusBarHelper = new StatusBarHelper(context);
 
+
         final TintTypedArray a = TintTypedArray.obtainStyledAttributes(context, attrs, R.styleable.Showcase, defStyleAttr, 0);
 
         id = a.getResourceId(R.styleable.Showcase_targetId, Integer.MIN_VALUE);
@@ -59,6 +62,7 @@ public class ShowcaseLayout extends FrameLayout {
 
         final int targetWidth = a.getDimensionPixelSize(R.styleable.Showcase_targetWidth, 100);
         final int targetHeight = a.getDimensionPixelSize(R.styleable.Showcase_targetWidth, 100);
+        mCanceledOnTouchOutside = a.getBoolean(R.styleable.Showcase_canceledOnTouchOutside, true);
 
         mShowcaseDrawer = new HintShowcaseDrawer(context,
                 text == null ? "" : text,
@@ -102,6 +106,7 @@ public class ShowcaseLayout extends FrameLayout {
         Log.v("ShowcaseLayout", "onMeasure getMeasuredHeight:" + getMeasuredHeight());
     }
 
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         if (!mDisplay) {
@@ -110,23 +115,21 @@ public class ShowcaseLayout extends FrameLayout {
 
         if (mTarget != null) {
             if (containsView(mTarget, ev)) {
-                onTouch(ev, true);
+                onTouch(ev);
+                Log.v("ShowcaseLayout", "onTouchEvent hit mTarget");
                 return super.dispatchTouchEvent(ev);
             }
         }
 
-        onTouch(ev, false);
+        if(mCanceledOnTouchOutside){
+            onTouch(ev);
+        }
         return true;
     }
 
-    protected void onTouch(MotionEvent ev, boolean isHitTarget) {
+    protected void onTouch(MotionEvent ev) {
         switch (ev.getAction()) {
             case ACTION_UP:
-                if (isHitTarget) {
-                    Log.v("ShowcaseLayout", "onTouchEvent hit mTarget");
-                } else {
-                    Log.v("ShowcaseLayout", "onTouchEvent not hit mTarget");
-                }
                 mDisplay = false;
                 invalidate();
                 break;
@@ -135,7 +138,6 @@ public class ShowcaseLayout extends FrameLayout {
 
     public void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
-
         if (!isInEditMode()) {
             if (mDisplay) {
                 canvas.save();
@@ -171,8 +173,7 @@ public class ShowcaseLayout extends FrameLayout {
     }
 
     private boolean containsView(@NonNull View view, @NonNull MotionEvent ev) {
-        Rect rect = new Rect();
-        view.getHitRect(rect);
+        Rect rect = getRect();
         float x = ev.getX();
         float y = ev.getY();
         boolean inRect = rect.contains((int) x, (int) y);
