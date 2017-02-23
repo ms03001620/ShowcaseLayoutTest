@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<org.mark.showcaselayouttest.ShowcaseLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<org.mark.showcase.ShowcaseLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:showcase="http://schemas.android.com/apk/res-auto"
     android:id="@+id/layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    showcase:direction="below"
+    showcase:display="true"
+    showcase:shape="rect"
+    showcase:targetId="@+id/text_hello"
+    showcase:text="555555555555">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
 
-            android:background="#F00"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:background="#F00" />
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -31,22 +36,20 @@
                 android:paddingTop="@dimen/activity_vertical_margin">
 
                 <Button
-                    android:id="@+id/btn1"
+                    android:id="@+id/text_hello"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="100dp"
                     android:text="hello" />
 
                 <Button
+                    android:id="@+id/text_world"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
                     android:layout_margin="100dp"
                     android:text="world" />
-
-
             </RelativeLayout>
-
 
             <android.support.design.widget.FloatingActionButton
                 android:id="@+id/btn"
@@ -57,4 +60,4 @@
 
     </RelativeLayout>
 
-</org.mark.showcaselayouttest.ShowcaseLayout>
+</org.mark.showcase.ShowcaseLayout>

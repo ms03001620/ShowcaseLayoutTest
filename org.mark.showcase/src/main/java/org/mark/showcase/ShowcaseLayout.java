@@ -1,4 +1,4 @@
-package org.mark.showcaselayouttest;
+package org.mark.showcase;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -55,7 +55,7 @@ public class ShowcaseLayout extends FrameLayout {
 
         final float textSize = a.getDimension(R.styleable.Showcase_textSize, 32);
 
-        final int textBoxMaxWidth = a.getDimensionPixelSize(R.styleable.Showcase_textBoxMaxWidth, 600);
+        final int textBoxMaxWidth = a.getDimensionPixelSize(R.styleable.Showcase_textBoxMaxWidth, 0);
 
         final int targetWidth = a.getDimensionPixelSize(R.styleable.Showcase_targetWidth, 100);
         final int targetHeight = a.getDimensionPixelSize(R.styleable.Showcase_targetWidth, 100);

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="Showcase">
+        <attr name="display" format="boolean" />
+        <attr name="targetId" format="reference" />
+        <attr name="targetWidth" format="dimension" />
+        <attr name="targetHeight" format="dimension" />
+        <attr name="text" format="string" />
+        <attr name="textSize" format="dimension" />
+        <attr name="textBoxMaxWidth" format="dimension" />
+
+        <attr name="direction">
+<!--            <enum name="unknown" value="-1" />
+            <enum name="left" value="0" />
+            <enum name="right" value="2" />-->
+            <enum name="above" value="1" />
+            <enum name="below" value="3" />
+        </attr>
+
+        <attr name="shape">
+            <enum name="rect" value="1" />
+            <enum name="oval" value="2" />
+            <enum name="leaf" value="3" />
+        </attr>
+    </declare-styleable>
+
+</resources>
+
+
+<!--
+    * @attr ref android.support.v7.appcompat.R.styleable#SwitchCompat_android_textOn
+    * @attr ref android.support.v7.appcompat.R.styleable#SwitchCompat_android_textOff
+    * @attr ref android.support.v7.appcompat.R.styleable#SwitchCompat_switchMinWidth
+    * @attr ref android.support.v7.appcompat.R.styleable#SwitchCompat_switchPadding
+    * @attr ref android.support.v7.appcompat.R.styleable#SwitchCompat_switchTextAppearance
+    * @attr ref android.support.v7.appcompat.R.styleable#SwitchCompat_android_thumb
+    * @attr ref android.support.v7.appcompat.R.styleable#SwitchCompat_thumbTextPadding
+
+    * @attr ref android.support.v7.appcompat.R.styleable#SwitchCompat_track
+
+            <item name="track">@drawable/track</item>
+        <item name="android:thumb">@drawable/thumb</item>
+        <item name="android:textOn">@drawable/ico_toggle_chat</item>
+        <item name="android:textOff">@drawable/ico_toggle_feed</item>
+        <item name="switchTextAppearance">@drawable/indicator</item>
+        <item name="thumbTintMode">src_atop</item>
+        <item name="switchMinWidth">130dp</item>
+
+    -->

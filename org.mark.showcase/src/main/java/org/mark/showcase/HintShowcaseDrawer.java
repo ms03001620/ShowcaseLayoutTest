@@ -1,4 +1,4 @@
-package org.mark.showcaselayouttest;
+package org.mark.showcase;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -17,7 +17,6 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.text.TextPaint;
-import android.util.TypedValue;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -43,6 +42,7 @@ public class HintShowcaseDrawer {
     private static final int DEFAULT_DRAWER_MARGIN_TO_SCREEN = 10;
     private static final int DEFAULT_DRAWER_ARROW_SIZE = 10;
     private static final int DEFAULT_DRAWER_MARGIN_TO_TARGET = 15;
+    private static final int DEFAULT_HINT_WIDTH = 300;
 
     public static final int RECT = 1;
     public static final int OVAL = 2;
@@ -63,16 +63,16 @@ public class HintShowcaseDrawer {
     private final RectF mTargetRect;
     private final Paint mTargetPaint;
 
-    private int mLinePadding;
-    private int mLineStrokeWidth;
-    private int mLinePointWidth;
+    private float mLinePadding;
+    private float mLineStrokeWidth;
+    private float mLinePointWidth;
 
     private final HintDrawer mHintDrawer;
-    private int mHintDrawerBgRadius;
-    private int mHintDrawerPadding;
-    private int mHintDrawerMarginToScreen;
-    private int mHintDrawerArrowSize;
-    private int mHintDrawerMarginToTarget;
+    private float mHintDrawerBgRadius;
+    private float mHintDrawerPadding;
+    private float mHintDrawerMarginToScreen;
+    private float mHintDrawerArrowSize;
+    private float mHintDrawerMarginToTarget;
 
     public HintShowcaseDrawer(Context context,
                               @NonNull String hintText,
@@ -86,7 +86,7 @@ public class HintShowcaseDrawer {
     }
 
     public HintShowcaseDrawer(Context context, String hintText, @TextPosition int hintPosition,
-                              @ColorInt int maskColorRes ,int hintWidth, @TargetShape int targetShape, float hintTextSize, int targetWidth, int targetHeight) {
+                              @ColorInt int maskColorRes ,float hintWidth, @TargetShape int targetShape, float hintTextSize, int targetWidth, int targetHeight) {
         Resources resources = context.getResources();
         this.mTargetWidth = targetWidth;
         this.mTargetHeight = targetHeight;
@@ -117,7 +117,10 @@ public class HintShowcaseDrawer {
         //箭头大小
         mHintDrawerArrowSize = dpToPx(resources, DEFAULT_DRAWER_ARROW_SIZE);
 
-        mHintDrawer = new HintDrawer((int)hintWidth, mHintDrawerMarginToTarget, mHintDrawerBgRadius, mHintDrawerPadding, mHintDrawerArrowSize, mHintDrawerMarginToScreen);
+        if (hintWidth == 0) {
+            hintWidth = dpToPx(resources, DEFAULT_HINT_WIDTH);
+        }
+        mHintDrawer = new HintDrawer(hintWidth, mHintDrawerMarginToTarget, (int)mHintDrawerBgRadius, mHintDrawerPadding, mHintDrawerArrowSize, mHintDrawerMarginToScreen);
         mHintDrawer.forceTextPosition(hintPosition);
         mHintDrawer.setContentText(hintText);
 
@@ -195,8 +198,8 @@ public class HintShowcaseDrawer {
         return path;
     }
 
-    private static int dpToPx(Resources resources, float dp) {
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.getDisplayMetrics());
+    private float dpToPx(Resources resources, float dp) {
+        return Utils.dpToPx(resources, dp);
     }
 
     public void setShowcaseColour(int color) {

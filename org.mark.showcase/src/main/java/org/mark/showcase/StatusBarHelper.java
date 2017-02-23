@@ -1,4 +1,4 @@
-package org.mark.showcaselayouttest;
+package org.mark.showcase;
 
 import android.app.Activity;
 import android.content.Context;

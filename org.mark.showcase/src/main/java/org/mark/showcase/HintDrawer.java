@@ -1,4 +1,4 @@
-package org.mark.showcaselayouttest;
+package org.mark.showcase;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -14,8 +14,8 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.style.MetricAffectingSpan;
 
-import static org.mark.showcaselayouttest.HintShowcaseDrawer.ABOVE_SHOWCASE;
-import static org.mark.showcaselayouttest.HintShowcaseDrawer.BELOW_SHOWCASE;
+import static org.mark.showcase.HintShowcaseDrawer.ABOVE_SHOWCASE;
+import static org.mark.showcase.HintShowcaseDrawer.BELOW_SHOWCASE;
 
 public class HintDrawer {
     private static final int INDEX_TEXT_START_X = 0;
@@ -32,14 +32,14 @@ public class HintDrawer {
     private float[] mBestTextPosition = new float[4];
     @HintShowcaseDrawer.TextPosition
     private int mForcedTextPosition;
-    private int mArrowSize;
-    private int mBgMarginToTarget;
-    private int mBgMarginToScreen;
-    private int mBgPadding;
-    private int mBgWidth;
+    private float mArrowSize;
+    private float mBgMarginToTarget;
+    private float mBgMarginToScreen;
+    private float mBgPadding;
+    private float mBgWidth;
     private int mBgRadius;
 
-    public HintDrawer(int bgWidth, int bgMarginToTarget, int bgRadius, int bgPadding, int arrowSize, int bgMarginToScreen) {
+    public HintDrawer(float bgWidth, float bgMarginToTarget, int bgRadius, float bgPadding, float arrowSize, float bgMarginToScreen) {
         this.mBgWidth = bgWidth;
         this.mBgMarginToTarget = bgMarginToTarget;
         this.mBgRadius = bgRadius;
@@ -52,7 +52,7 @@ public class HintDrawer {
     }
 
     public void calculateTextPosition(int canvasW, RectF showcase) {
-        mTextLayout = new DynamicLayout(mText, mTextPaint, mBgWidth - mBgPadding * 2, mTextAlignment, 1.2f, 1.0f, true);
+        mTextLayout = new DynamicLayout(mText, mTextPaint,(int)( mBgWidth - mBgPadding * 2), mTextAlignment, 1.2f, 1.0f, true);
         switch (mForcedTextPosition) {
             case ABOVE_SHOWCASE:
                 //bg x
@@ -94,7 +94,7 @@ public class HintDrawer {
         }
     }
 
-    public int calcHeight(int lineWidth) {
+    public int calcHeight(float lineWidth) {
         double aMiddleLine = Math.sqrt(3) / 2 * lineWidth;
         return (int) Math.round(aMiddleLine);
     }
@@ -110,7 +110,7 @@ public class HintDrawer {
                     canvas.translate(textPosition[INDEX_TEXT_START_X], textPosition[INDEX_TEXT_START_Y]);
                     Rect bgRect = new Rect();
                     //bgHeight = textHeight + mBgPadding * 2;
-                    bgRect.set(0, 0, (int) textPosition[INDEX_TEXT_WIDTH], mTextLayout.getHeight() + mBgPadding * 2);
+                    bgRect.set(0, 0, (int) textPosition[INDEX_TEXT_WIDTH], (int)(mTextLayout.getHeight() + mBgPadding * 2));
                     drawBg(bgRect, canvas, (int) textPosition[INDEX_ARROW_OFFSET], mBgRadius);
                     canvas.restore();
 
@@ -124,7 +124,7 @@ public class HintDrawer {
         }
     }
 
-    private void drawBg(Rect rect, Canvas canvas, int arrowOffset, int bgRadius) {
+    private void drawBg(Rect rect, Canvas canvas, int arrowOffset, float bgRadius) {
         Paint paint = new Paint();
         paint.setAntiAlias(true);
         paint.setColor(Color.WHITE);
@@ -133,12 +133,12 @@ public class HintDrawer {
         path.moveTo(rect.left, rect.top + bgRadius);
         path.quadTo(rect.left, rect.top, rect.left + bgRadius, rect.left);
 
-        int round = mArrowSize / 3;
-        int keep = mArrowSize / 2;
+        float round = mArrowSize / 3;
+        float keep = mArrowSize / 2;
 
         if (mForcedTextPosition == BELOW_SHOWCASE) {
             Point start = new Point();
-            start.set(rect.centerX() - mArrowSize + arrowOffset, rect.top);
+            start.set(Math.round(rect.centerX() - mArrowSize + arrowOffset), rect.top);
             path.lineTo(start.x, start.y);//start
 
             path.cubicTo(
@@ -161,7 +161,7 @@ public class HintDrawer {
 
         if (mForcedTextPosition == ABOVE_SHOWCASE) {
             Point start = new Point();
-            start.set(rect.centerX() + mArrowSize + arrowOffset, rect.bottom);
+            start.set(Math.round(rect.centerX() + mArrowSize + arrowOffset), rect.bottom);
             path.lineTo(start.x, start.y);//start
 
             path.cubicTo(
