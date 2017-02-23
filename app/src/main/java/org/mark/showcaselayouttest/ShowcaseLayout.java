@@ -1,12 +1,14 @@
 package org.mark.showcaselayouttest;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.TintTypedArray;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -23,7 +25,7 @@ public class ShowcaseLayout extends FrameLayout {
     private HintShowcaseDrawer mShowcaseDrawer;
     private Bitmap mBitmapBuffer;
 
-    private int id;
+    private final int id;
 
     public ShowcaseLayout(Context context) {
         this(context, null);
@@ -37,18 +39,39 @@ public class ShowcaseLayout extends FrameLayout {
         super(context, attrs, defStyleAttr);
         long start = System.currentTimeMillis();
         mContext = context;
-        mDisplay = true;
+        Resources resources = context.getResources();
         mStatusBarHelper = new StatusBarHelper(context);
 
-        mShowcaseDrawer = new HintShowcaseDrawer(context,
-                R.string.content_2,
-                HintShowcaseDrawer.ABOVE_SHOWCASE,
-                R.dimen.hint_bg_width,
-                R.dimen.hint_text_size,
-                R.dimen.btn_width,
-                R.dimen.btn_width);
+        final TintTypedArray a = TintTypedArray.obtainStyledAttributes(context, attrs, R.styleable.Showcase, defStyleAttr, 0);
 
-        id = R.id.btn;
+        id = a.getResourceId(R.styleable.Showcase_targetId, Integer.MIN_VALUE);
+        if (id == Integer.MIN_VALUE) {
+            throw new IllegalArgumentException("Please set targetId");
+        }
+
+        mDisplay = a.getBoolean(R.styleable.Showcase_display, true);
+
+        final String text = a.getString(R.styleable.Showcase_text);
+
+        final float textSize = a.getDimension(R.styleable.Showcase_textSize, 32);
+
+        final int textBoxMaxWidth = a.getDimensionPixelSize(R.styleable.Showcase_textBoxMaxWidth, 600);
+
+        final int targetWidth = a.getDimensionPixelSize(R.styleable.Showcase_targetWidth, 100);
+        final int targetHeight = a.getDimensionPixelSize(R.styleable.Showcase_targetWidth, 100);
+
+        mShowcaseDrawer = new HintShowcaseDrawer(context,
+                text == null ? "" : text,
+                parseDirection(a.getInt(R.styleable.Showcase_direction, 3)),
+                textBoxMaxWidth,
+                parseShape(a.getInt(R.styleable.Showcase_shape, 1)),
+                textSize,
+                targetWidth,
+                targetHeight);
+
+        a.recycle();
+
+
         Log.v("ShowcaseLayout", "pass:" + (System.currentTimeMillis() - start));
     }
 
@@ -154,5 +177,33 @@ public class ShowcaseLayout extends FrameLayout {
         float y = ev.getY();
         boolean inRect = rect.contains((int) x, (int) y);
         return inRect;
+    }
+
+    static @HintShowcaseDrawer.TextPosition int parseDirection(int value) {
+        switch (value){
+            case 0:
+                return HintShowcaseDrawer.LEFT_OF_SHOWCASE;
+            case 1:
+                return HintShowcaseDrawer.ABOVE_SHOWCASE;
+            case 2:
+                return HintShowcaseDrawer.RIGHT_OF_SHOWCASE;
+            case 3:
+                return HintShowcaseDrawer.BELOW_SHOWCASE;
+            default:
+                return HintShowcaseDrawer.BELOW_SHOWCASE;
+        }
+    }
+
+    static @HintShowcaseDrawer.TargetShape int parseShape(int value) {
+        switch (value){
+            case 1:
+                return HintShowcaseDrawer.RECT;
+            case 2:
+                return HintShowcaseDrawer.OVAL;
+            case 3:
+                return HintShowcaseDrawer.LEAF;
+            default:
+                return HintShowcaseDrawer.RECT;
+        }
     }
 }

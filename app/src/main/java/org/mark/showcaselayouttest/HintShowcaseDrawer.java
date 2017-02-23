@@ -14,12 +14,10 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.support.annotation.ColorInt;
-import android.support.annotation.DimenRes;
 import android.support.annotation.IntDef;
-import android.support.annotation.StringRes;
+import android.support.annotation.NonNull;
 import android.text.TextPaint;
 import android.util.TypedValue;
-
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -76,39 +74,22 @@ public class HintShowcaseDrawer {
     private int mHintDrawerArrowSize;
     private int mHintDrawerMarginToTarget;
 
-
-    public HintShowcaseDrawer(Context context, @StringRes int hintText, @TextPosition int hintPosition,
-                              @DimenRes int hintWidth,
-                              @DimenRes int hintTextSize,
-                              @DimenRes int targetWidth,
-                              @DimenRes int targetHeight) {
-        this(context, hintText, hintPosition, 0x80000000, hintWidth, OVAL, hintTextSize, targetWidth, targetHeight, false);
-    }
-
-    public HintShowcaseDrawer(Context context, @StringRes int hintText, @TextPosition int hintPosition,
-                              @DimenRes int hintWidth,
-                              @DimenRes int hintTextSize,
-                              @DimenRes int targetWidth,
-                              @DimenRes int targetHeight,
-                              @TargetShape int targetShape) {
-        this(context, hintText, hintPosition, 0x80000000, hintWidth, targetShape, hintTextSize, targetWidth, targetHeight, false);
-    }
-
-    public HintShowcaseDrawer(Context context, @StringRes int hintText, @TextPosition int hintPosition,
-                              @DimenRes int hintWidth,
-                              @DimenRes int hintTextSize,
-                              int targetWidth,
-                              int targetHeight,
+    public HintShowcaseDrawer(Context context,
+                              @NonNull String hintText,
+                              @TextPosition int hintPosition,
+                              int hintWidth,
                               @TargetShape int targetShape,
-                              boolean isPixels) {
-        this(context, hintText, hintPosition, 0x80000000, hintWidth, targetShape, hintTextSize, targetWidth, targetHeight, isPixels);
+                              float hintTextSize,
+                              int targetWidth,
+                              int targetHeight) {
+        this(context, hintText, hintPosition, 0x80000000, hintWidth, targetShape, hintTextSize, targetWidth, targetHeight);
     }
 
-    public HintShowcaseDrawer(Context context, @StringRes int hintText, @TextPosition int hintPosition,
-                              @ColorInt int maskColorRes, @DimenRes int hintWidth, @TargetShape int targetShape, @DimenRes int hintTextSize, int targetWidth, int targetHeight, boolean isPixels) {
+    public HintShowcaseDrawer(Context context, String hintText, @TextPosition int hintPosition,
+                              @ColorInt int maskColorRes ,int hintWidth, @TargetShape int targetShape, float hintTextSize, int targetWidth, int targetHeight) {
         Resources resources = context.getResources();
-        this.mTargetWidth = isPixels ? targetWidth : resources.getDimension(targetWidth);
-        this.mTargetHeight = isPixels ? targetHeight : resources.getDimension(targetHeight);
+        this.mTargetWidth = targetWidth;
+        this.mTargetHeight = targetHeight;
         mTargetPaint = new Paint();
         mTargetPaint.setColor(0xFFFFFF);
         mTargetPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
@@ -136,12 +117,12 @@ public class HintShowcaseDrawer {
         //箭头大小
         mHintDrawerArrowSize = dpToPx(resources, DEFAULT_DRAWER_ARROW_SIZE);
 
-        mHintDrawer = new HintDrawer((int)resources.getDimension(hintWidth), mHintDrawerMarginToTarget, mHintDrawerBgRadius, mHintDrawerPadding, mHintDrawerArrowSize, mHintDrawerMarginToScreen);
+        mHintDrawer = new HintDrawer((int)hintWidth, mHintDrawerMarginToTarget, mHintDrawerBgRadius, mHintDrawerPadding, mHintDrawerArrowSize, mHintDrawerMarginToScreen);
         mHintDrawer.forceTextPosition(hintPosition);
-        mHintDrawer.setContentText(resources.getString(hintText));
+        mHintDrawer.setContentText(hintText);
 
         TextPaint paint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-        paint.setTextSize(resources.getDimension(hintTextSize));
+        paint.setTextSize(hintTextSize);
         paint.setFakeBoldText(true);
         paint.setColor(0xFF07a7ab);
         mHintDrawer.setContentPaint(paint);
@@ -162,12 +143,9 @@ public class HintShowcaseDrawer {
 
     public void drawShowcase(Bitmap buffer, Rect rect) {
         Canvas bufferCanvas = new Canvas(buffer);
-
         mTargetRect.set(rect);
-
         mHintDrawer.calculateTextPosition(buffer.getWidth(), mTargetRect);
         mHintDrawer.draw(bufferCanvas);
-
         drawTarget(bufferCanvas);
     }
 
@@ -223,25 +201,6 @@ public class HintShowcaseDrawer {
 
     public void setShowcaseColour(int color) {
         mTargetPaint.setColor(color);
-    }
-
-    public int getShowcaseWidth() {
-        return (int) mTargetWidth;
-    }
-
-    public RectF getTargetRect(){
-        return mTargetRect;
-    }
-
-    public int getShowcaseHeight() {
-        return (int) mTargetHeight;
-    }
-
-    public float getBlockedRadius() {
-        return mTargetWidth;
-    }
-
-    public void setBackgroundColour(int backgroundColor) {
     }
 
     public void erase(Bitmap bitmapBuffer) {
