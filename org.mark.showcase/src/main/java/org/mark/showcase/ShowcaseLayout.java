@@ -1,8 +1,6 @@
 package org.mark.showcase;
 
-import android.app.Dialog;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -11,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.TintTypedArray;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -19,15 +16,14 @@ import android.widget.FrameLayout;
 import static android.view.MotionEvent.ACTION_UP;
 
 public class ShowcaseLayout extends FrameLayout {
-    private Context mContext;
-    private View mTarget;
     private boolean mDisplay;
+    private Rect mTargetRect;
     private StatusBarHelper mStatusBarHelper;
     private HintShowcaseDrawer mShowcaseDrawer;
     private Bitmap mBitmapBuffer;
     private boolean mCanceledOnTouchOutside;
 
-    private final int id;
+    private final int mTargetId;
 
     public ShowcaseLayout(Context context) {
         this(context, null);
@@ -39,16 +35,13 @@ public class ShowcaseLayout extends FrameLayout {
 
     public ShowcaseLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        long start = System.currentTimeMillis();
-        mContext = context;
-        Resources resources = context.getResources();
         mStatusBarHelper = new StatusBarHelper(context);
-
 
         final TintTypedArray a = TintTypedArray.obtainStyledAttributes(context, attrs, R.styleable.Showcase, defStyleAttr, 0);
 
-        id = a.getResourceId(R.styleable.Showcase_targetId, Integer.MIN_VALUE);
-        if (id == Integer.MIN_VALUE) {
+        mTargetId = a.getResourceId(R.styleable.Showcase_targetId, Integer.MIN_VALUE);
+        mTargetRect = new Rect();
+        if (mTargetId == Integer.MIN_VALUE) {
             throw new IllegalArgumentException("Please set targetId");
         }
 
@@ -74,9 +67,6 @@ public class ShowcaseLayout extends FrameLayout {
                 targetHeight);
 
         a.recycle();
-
-
-        Log.v("ShowcaseLayout", "pass:" + (System.currentTimeMillis() - start));
     }
 
 
@@ -88,12 +78,18 @@ public class ShowcaseLayout extends FrameLayout {
         invalidate();
     }
 
+    public void setEnabled(boolean enabled) {
+        setDisplay(enabled);
+    }
+
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        Log.v("ShowcaseLayout", "onLayout bottom:" + bottom);
-        if (mTarget == null) {
-            mTarget = findViewById(id);
+        if (mTargetRect.isEmpty()) {
+            View view = findViewById(mTargetId);
+            if (view != null) {
+                mTargetRect.set(getRect(view));
+            }
         }
         if (mBitmapBuffer == null) {
             mBitmapBuffer = Bitmap.createBitmap(getMeasuredWidth(), getMeasuredHeight(), Bitmap.Config.ARGB_4444);
@@ -101,27 +97,16 @@ public class ShowcaseLayout extends FrameLayout {
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        Log.v("ShowcaseLayout", "onMeasure getMeasuredHeight:" + getMeasuredHeight());
-    }
-
-
-    @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         if (!mDisplay) {
             return super.dispatchTouchEvent(ev);
         }
-
-        if (mTarget != null) {
-            if (containsView(mTarget, ev)) {
-                onTouch(ev);
-                Log.v("ShowcaseLayout", "onTouchEvent hit mTarget");
-                return super.dispatchTouchEvent(ev);
-            }
+        if (containsView(ev)) {
+            onTouch(ev);
+            return super.dispatchTouchEvent(ev);
         }
 
-        if(mCanceledOnTouchOutside){
+        if (mCanceledOnTouchOutside) {
             onTouch(ev);
         }
         return true;
@@ -141,9 +126,10 @@ public class ShowcaseLayout extends FrameLayout {
         if (!isInEditMode()) {
             if (mDisplay) {
                 canvas.save();
-                Rect targetRect = getRect();
                 mShowcaseDrawer.erase(mBitmapBuffer);
-                mShowcaseDrawer.drawShowcase(mBitmapBuffer, targetRect);
+                if (!mTargetRect.isEmpty()) {
+                    mShowcaseDrawer.drawShowcase(mBitmapBuffer, mTargetRect);
+                }
                 mShowcaseDrawer.drawToCanvas(canvas, mBitmapBuffer);
                 canvas.restore();
                 mStatusBarHelper.tintStatusBar(mShowcaseDrawer.getBaseColor());
@@ -154,14 +140,14 @@ public class ShowcaseLayout extends FrameLayout {
     }
 
     @NonNull
-    private Rect getRect() {
+    private Rect getRect(@NonNull View view) {
         Rect targetRect = new Rect();
-        mTarget.getGlobalVisibleRect(targetRect);
+        view.getGlobalVisibleRect(targetRect);
         targetRect.offset(0, -mStatusBarHelper.getStatusBarHeight());
 
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
-            if (mTarget instanceof FloatingActionButton) {
-                FloatingActionButton fab = (FloatingActionButton) mTarget;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            if (view instanceof FloatingActionButton) {
+                FloatingActionButton fab = (FloatingActionButton) view;
                 Rect rect = new Rect();
                 fab.getContentRect(rect);
                 rect.offset(targetRect.left, targetRect.top);
@@ -172,16 +158,19 @@ public class ShowcaseLayout extends FrameLayout {
         return targetRect;
     }
 
-    private boolean containsView(@NonNull View view, @NonNull MotionEvent ev) {
-        Rect rect = getRect();
-        float x = ev.getX();
-        float y = ev.getY();
-        boolean inRect = rect.contains((int) x, (int) y);
-        return inRect;
+    private boolean containsView(@NonNull MotionEvent ev) {
+        if (!mTargetRect.isEmpty()) {
+            float x = ev.getX();
+            float y = ev.getY();
+            boolean inRect = mTargetRect.contains((int) x, (int) y);
+            return inRect;
+        }
+        return false;
     }
 
-    static @HintShowcaseDrawer.TextPosition int parseDirection(int value) {
-        switch (value){
+    @HintShowcaseDrawer.TextPosition
+    protected int parseDirection(int value) {
+        switch (value) {
             case 0:
                 return HintShowcaseDrawer.LEFT_OF_SHOWCASE;
             case 1:
@@ -195,8 +184,9 @@ public class ShowcaseLayout extends FrameLayout {
         }
     }
 
-    static @HintShowcaseDrawer.TargetShape int parseShape(int value) {
-        switch (value){
+    @HintShowcaseDrawer.TargetShape
+    protected int parseShape(int value) {
+        switch (value) {
             case 1:
                 return HintShowcaseDrawer.RECT;
             case 2:
