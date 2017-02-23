@@ -8,7 +8,7 @@
     showcase:display="true"
     showcase:shape="oval"
     showcase:canceledOnTouchOutside="false"
-    showcase:targetId="@+id/text_world"
+    showcase:targetId="@id/showcase_target_id"
     showcase:text="@string/content_1">
 
     <RelativeLayout
@@ -44,7 +44,7 @@
                     android:text="open showcase" />
 
                 <Button
-                    android:id="@+id/text_world"
+                    android:id="@id/showcase_target_id"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
