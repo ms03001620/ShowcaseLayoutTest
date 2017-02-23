@@ -4,7 +4,9 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -12,7 +14,6 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import static android.view.MotionEvent.ACTION_UP;
-import static org.mark.showcaselayouttest.HintShowcaseDrawer.BELOW_SHOWCASE;
 
 public class ShowcaseLayout extends FrameLayout {
     private Context mContext;
@@ -41,7 +42,7 @@ public class ShowcaseLayout extends FrameLayout {
 
         mShowcaseDrawer = new HintShowcaseDrawer(context,
                 R.string.content_2,
-                BELOW_SHOWCASE,
+                HintShowcaseDrawer.ABOVE_SHOWCASE,
                 R.dimen.hint_bg_width,
                 R.dimen.hint_text_size,
                 R.dimen.btn_width,
@@ -66,6 +67,9 @@ public class ShowcaseLayout extends FrameLayout {
         Log.v("ShowcaseLayout", "onLayout bottom:" + bottom);
         if (mTarget == null) {
             mTarget = findViewById(id);
+        }
+        if (mBitmapBuffer == null) {
+            mBitmapBuffer = Bitmap.createBitmap(getMeasuredWidth(), getMeasuredHeight(), Bitmap.Config.ARGB_4444);
         }
     }
 
@@ -112,19 +116,9 @@ public class ShowcaseLayout extends FrameLayout {
         if (!isInEditMode()) {
             if (mDisplay) {
                 canvas.save();
-                float x = mTarget.getX();
-                float y = mTarget.getY();
-
-                Rect targetRect = new Rect();
-
-                mTarget.getDrawingRect(targetRect);
-
-                if (mBitmapBuffer == null) {
-                    mBitmapBuffer = Bitmap.createBitmap(getMeasuredWidth(), getMeasuredHeight(), Bitmap.Config.ARGB_4444);
-                }
-
+                Rect targetRect = getRect();
                 mShowcaseDrawer.erase(mBitmapBuffer);
-                mShowcaseDrawer.drawShowcase(mBitmapBuffer, x + targetRect.centerX(), y + targetRect.centerY(), 1f);
+                mShowcaseDrawer.drawShowcase(mBitmapBuffer, targetRect);
                 mShowcaseDrawer.drawToCanvas(canvas, mBitmapBuffer);
                 canvas.restore();
                 mStatusBarHelper.tintStatusBar(mShowcaseDrawer.getBaseColor());
@@ -132,6 +126,25 @@ public class ShowcaseLayout extends FrameLayout {
                 mStatusBarHelper.unTintStatusBar();
             }
         }
+    }
+
+    @NonNull
+    private Rect getRect() {
+        Rect targetRect = new Rect();
+        mTarget.getGlobalVisibleRect(targetRect);
+        targetRect.offset(0, -mStatusBarHelper.getStatusBarHeight());
+
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
+            if (mTarget instanceof FloatingActionButton) {
+                FloatingActionButton fab = (FloatingActionButton) mTarget;
+                Rect rect = new Rect();
+                fab.getContentRect(rect);
+                rect.offset(targetRect.left, targetRect.top);
+                return rect;
+            }
+        }
+
+        return targetRect;
     }
 
     private boolean containsView(@NonNull View view, @NonNull MotionEvent ev) {

@@ -160,6 +160,17 @@ public class HintShowcaseDrawer {
         drawTarget(bufferCanvas);
     }
 
+    public void drawShowcase(Bitmap buffer, Rect rect) {
+        Canvas bufferCanvas = new Canvas(buffer);
+
+        mTargetRect.set(rect);
+
+        mHintDrawer.calculateTextPosition(buffer.getWidth(), mTargetRect);
+        mHintDrawer.draw(bufferCanvas);
+
+        drawTarget(bufferCanvas);
+    }
+
 
     private void drawTarget(Canvas bufferCanvas) {
         RectF lineRectF = new RectF(mTargetRect);

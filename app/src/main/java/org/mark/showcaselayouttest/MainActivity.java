@@ -23,11 +23,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        changePostion();
+        //changePostion();
     }
 
     private void changePostion() {
-        final Button btn = (Button) findViewById(R.id.btn);
+        final View btn = (View) findViewById(R.id.btn);
         final RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) btn.getLayoutParams();
         btn.postDelayed(new Runnable() {
             @Override
