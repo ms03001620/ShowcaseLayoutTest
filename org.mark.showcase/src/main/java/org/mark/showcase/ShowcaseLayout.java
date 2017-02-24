@@ -246,4 +246,10 @@ public class ShowcaseLayout extends FrameLayout {
             mListeners.add(listener);
         }
     }
+
+    public void removeListener(IShowcase listener){
+        if (mListeners.contains(listener)) {
+            mListeners.remove(listener);
+        }
+    }
 }
