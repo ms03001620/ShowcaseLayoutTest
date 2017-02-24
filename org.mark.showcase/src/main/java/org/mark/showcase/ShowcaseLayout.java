@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.TintTypedArray;
 import android.util.AttributeSet;
@@ -201,5 +202,10 @@ public class ShowcaseLayout extends FrameLayout {
             default:
                 return HintShowcaseDrawer.RECT;
         }
+    }
+
+    public void setText(@StringRes int id) {
+        mShowcaseDrawer.setText(id);
+        invalidate();
     }
 }

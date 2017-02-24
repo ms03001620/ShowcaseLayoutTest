@@ -16,6 +16,8 @@ import android.graphics.RectF;
 import android.support.annotation.ColorInt;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringDef;
+import android.support.annotation.StringRes;
 import android.text.TextPaint;
 
 import java.lang.annotation.Retention;
@@ -28,6 +30,10 @@ public class HintShowcaseDrawer {
     public static final int RIGHT_OF_SHOWCASE = 2;
     public static final int ABOVE_SHOWCASE = 1;
     public static final int BELOW_SHOWCASE = 3;
+
+    public void setText(@StringRes int id) {
+        mHintDrawer.setContentText(mResources.getString(id));
+    }
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({UNDEFINED, LEFT_OF_SHOWCASE, RIGHT_OF_SHOWCASE, ABOVE_SHOWCASE, BELOW_SHOWCASE})
@@ -74,6 +80,8 @@ public class HintShowcaseDrawer {
     private float mHintDrawerArrowSize;
     private float mHintDrawerMarginToTarget;
 
+    private Resources mResources;
+
     public HintShowcaseDrawer(Context context,
                               @NonNull String hintText,
                               @TextPosition int hintPosition,
@@ -87,7 +95,7 @@ public class HintShowcaseDrawer {
 
     public HintShowcaseDrawer(Context context, String hintText, @TextPosition int hintPosition,
                               @ColorInt int maskColorRes ,float hintWidth, @TargetShape int targetShape, float hintTextSize, int targetWidth, int targetHeight) {
-        Resources resources = context.getResources();
+        mResources = context.getResources();
         this.mTargetWidth = targetWidth;
         this.mTargetHeight = targetHeight;
         mTargetPaint = new Paint();
@@ -101,24 +109,24 @@ public class HintShowcaseDrawer {
         this.mTargetShape = targetShape;
 
         //虚线距离洞口距离
-        mLinePadding = dpToPx(resources, DEFAULT_LINE_PADDING);
+        mLinePadding = dpToPx(mResources, DEFAULT_LINE_PADDING);
         //虚线粗细
-        mLineStrokeWidth = dpToPx(resources, DEFAULT_LINE_STROKE_WIDTH);
+        mLineStrokeWidth = dpToPx(mResources, DEFAULT_LINE_STROKE_WIDTH);
         //虚线的点长度
-        mLinePointWidth = dpToPx(resources, DEFAULT_LINE_POINT_WIDTH);
+        mLinePointWidth = dpToPx(mResources, DEFAULT_LINE_POINT_WIDTH);
         //Drawer 背景圆角直径
-        mHintDrawerBgRadius = dpToPx(resources, DEFAULT_DRAWER_CORNERS_RADIUS);
+        mHintDrawerBgRadius = dpToPx(mResources, DEFAULT_DRAWER_CORNERS_RADIUS);
         //Drawer 内边距
-        mHintDrawerPadding = dpToPx(resources, DEFAULT_DRAWER_PADDING);
+        mHintDrawerPadding = dpToPx(mResources, DEFAULT_DRAWER_PADDING);
         //Drawer 外边距，距离屏幕边界
-        mHintDrawerMarginToScreen = dpToPx(resources, DEFAULT_DRAWER_MARGIN_TO_SCREEN);
+        mHintDrawerMarginToScreen = dpToPx(mResources, DEFAULT_DRAWER_MARGIN_TO_SCREEN);
         //Drawer 外边距，距离目标showcase
-        mHintDrawerMarginToTarget = dpToPx(resources, DEFAULT_DRAWER_MARGIN_TO_TARGET);
+        mHintDrawerMarginToTarget = dpToPx(mResources, DEFAULT_DRAWER_MARGIN_TO_TARGET);
         //箭头大小
-        mHintDrawerArrowSize = dpToPx(resources, DEFAULT_DRAWER_ARROW_SIZE);
+        mHintDrawerArrowSize = dpToPx(mResources, DEFAULT_DRAWER_ARROW_SIZE);
 
         if (hintWidth == 0) {
-            hintWidth = dpToPx(resources, DEFAULT_HINT_WIDTH);
+            hintWidth = dpToPx(mResources, DEFAULT_HINT_WIDTH);
         }
         mHintDrawer = new HintDrawer(hintWidth, mHintDrawerMarginToTarget, (int)mHintDrawerBgRadius, mHintDrawerPadding, mHintDrawerArrowSize, mHintDrawerMarginToScreen);
         mHintDrawer.forceTextPosition(hintPosition);
