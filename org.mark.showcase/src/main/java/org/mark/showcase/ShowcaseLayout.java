@@ -206,6 +206,9 @@ public class ShowcaseLayout extends FrameLayout {
 
     public void setText(@StringRes int id) {
         mShowcaseDrawer.setText(id);
-        invalidate();
+    }
+
+    public void setShape(@HintShowcaseDrawer.TargetShape int shape) {
+        mShowcaseDrawer.setShape(shape);
     }
 }

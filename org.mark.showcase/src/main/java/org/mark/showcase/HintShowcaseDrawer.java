@@ -35,6 +35,10 @@ public class HintShowcaseDrawer {
         mHintDrawer.setContentText(mResources.getString(id));
     }
 
+    public void setShape(@HintShowcaseDrawer.TargetShape int shape) {
+        mTargetShape = shape;
+    }
+
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({UNDEFINED, LEFT_OF_SHOWCASE, RIGHT_OF_SHOWCASE, ABOVE_SHOWCASE, BELOW_SHOWCASE})
     public @interface TextPosition {
