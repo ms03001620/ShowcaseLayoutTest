@@ -9,6 +9,7 @@
         <attr name="textSize" format="dimension" />
         <attr name="textBoxMaxWidth" format="dimension" />
         <attr name="canceledOnTouchOutside" format="boolean" />
+        <attr name="canceledOnTouchTarget" format="boolean" />
 
         <attr name="direction">
 <!--            <enum name="unknown" value="-1" />
