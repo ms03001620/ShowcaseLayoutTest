@@ -22,6 +22,7 @@ public class ShowcaseLayout extends FrameLayout {
     private HintShowcaseDrawer mShowcaseDrawer;
     private Bitmap mBitmapBuffer;
     private boolean mCanceledOnTouchOutside;
+    private boolean mCanceledOnTouchTarget;
 
     private final int mTargetId;
 
@@ -56,6 +57,8 @@ public class ShowcaseLayout extends FrameLayout {
         final int targetWidth = a.getDimensionPixelSize(R.styleable.Showcase_targetWidth, 100);
         final int targetHeight = a.getDimensionPixelSize(R.styleable.Showcase_targetWidth, 100);
         mCanceledOnTouchOutside = a.getBoolean(R.styleable.Showcase_canceledOnTouchOutside, true);
+        mCanceledOnTouchTarget = a.getBoolean(R.styleable.Showcase_canceledOnTouchTarget, true);
+
 
         mShowcaseDrawer = new HintShowcaseDrawer(context,
                 text == null ? "" : text,
@@ -101,7 +104,7 @@ public class ShowcaseLayout extends FrameLayout {
         if (!mDisplay) {
             return super.dispatchTouchEvent(ev);
         }
-        if (containsView(ev)) {
+        if (mCanceledOnTouchTarget && containsView(ev)) {
             onTouch(ev);
             return super.dispatchTouchEvent(ev);
         }
