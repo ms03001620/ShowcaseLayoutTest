@@ -222,4 +222,12 @@ public class ShowcaseLayout extends FrameLayout {
         mTargetId = targetId;
         getRectWithId(mTargetId, mTargetRect);
     }
+
+    public void setCanceledOnTouchOutside(boolean canceledOnTouchOutside) {
+        mCanceledOnTouchOutside = canceledOnTouchOutside;
+    }
+
+    public void setCanceledOnTouchTarget(boolean canceledOnTouchTarget) {
+        mCanceledOnTouchTarget = canceledOnTouchTarget;
+    }
 }
