@@ -104,8 +104,10 @@ public class ShowcaseLayout extends FrameLayout {
         if (!mDisplay) {
             return super.dispatchTouchEvent(ev);
         }
-        if (mCanceledOnTouchTarget && containsView(ev)) {
-            onTouch(ev);
+        if (containsView(ev)) {
+            if (mCanceledOnTouchTarget) {
+                onTouch(ev);
+            }
             return super.dispatchTouchEvent(ev);
         }
 
