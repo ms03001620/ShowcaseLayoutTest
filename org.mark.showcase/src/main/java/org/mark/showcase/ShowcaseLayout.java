@@ -15,6 +15,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static android.view.MotionEvent.ACTION_UP;
 
 public class ShowcaseLayout extends FrameLayout {
@@ -25,6 +28,7 @@ public class ShowcaseLayout extends FrameLayout {
     private Bitmap mBitmapBuffer;
     private boolean mCanceledOnTouchOutside;
     private boolean mCanceledOnTouchTarget;
+    private List<IShowcase> mListeners;
 
     private int mTargetId;
 
@@ -39,6 +43,7 @@ public class ShowcaseLayout extends FrameLayout {
     public ShowcaseLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mStatusBarHelper = new StatusBarHelper(context);
+        mListeners = new ArrayList<>();
 
         final TintTypedArray a = TintTypedArray.obtainStyledAttributes(context, attrs, R.styleable.Showcase, defStyleAttr, 0);
 
@@ -127,8 +132,13 @@ public class ShowcaseLayout extends FrameLayout {
     protected void onTouch(MotionEvent ev) {
         switch (ev.getAction()) {
             case ACTION_UP:
-                mDisplay = false;
-                invalidate();
+                if(mDisplay){
+                    mDisplay = false;
+                    invalidate();
+                    for (int i = 0; i < mListeners.size(); i++) {
+                        mListeners.get(i).onHide();
+                    }
+                }
                 break;
         }
     }
@@ -229,5 +239,11 @@ public class ShowcaseLayout extends FrameLayout {
 
     public void setCanceledOnTouchTarget(boolean canceledOnTouchTarget) {
         mCanceledOnTouchTarget = canceledOnTouchTarget;
+    }
+
+    public void addListener(IShowcase listener){
+        if (!mListeners.contains(listener)) {
+            mListeners.add(listener);
+        }
     }
 }
