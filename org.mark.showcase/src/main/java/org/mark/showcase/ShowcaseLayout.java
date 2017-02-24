@@ -221,6 +221,5 @@ public class ShowcaseLayout extends FrameLayout {
     public void setTargetId(int targetId) {
         mTargetId = targetId;
         getRectWithId(mTargetId, mTargetRect);
-        invalidate();
     }
 }
