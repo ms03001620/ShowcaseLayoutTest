@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.TintTypedArray;
@@ -25,7 +26,7 @@ public class ShowcaseLayout extends FrameLayout {
     private boolean mCanceledOnTouchOutside;
     private boolean mCanceledOnTouchTarget;
 
-    private final int mTargetId;
+    private int mTargetId;
 
     public ShowcaseLayout(Context context) {
         this(context, null);
@@ -42,6 +43,7 @@ public class ShowcaseLayout extends FrameLayout {
         final TintTypedArray a = TintTypedArray.obtainStyledAttributes(context, attrs, R.styleable.Showcase, defStyleAttr, 0);
 
         mTargetId = a.getResourceId(R.styleable.Showcase_targetId, Integer.MIN_VALUE);
+
         mTargetRect = new Rect();
         if (mTargetId == Integer.MIN_VALUE) {
             throw new IllegalArgumentException("Please set targetId");
@@ -89,14 +91,18 @@ public class ShowcaseLayout extends FrameLayout {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        if (mTargetRect.isEmpty()) {
-            View view = findViewById(mTargetId);
-            if (view != null) {
-                mTargetRect.set(getRect(view));
-            }
-        }
+        //if (mTargetRect.isEmpty()) {
+            getRectWithId(mTargetId, mTargetRect);
+        //}
         if (mBitmapBuffer == null) {
             mBitmapBuffer = Bitmap.createBitmap(getMeasuredWidth(), getMeasuredHeight(), Bitmap.Config.ARGB_4444);
+        }
+    }
+
+    private void getRectWithId(int resId, @Nullable Rect rect) {
+        View view = findViewById(resId);
+        if (view != null) {
+            rect.set(getRect(view));
         }
     }
 
@@ -210,5 +216,11 @@ public class ShowcaseLayout extends FrameLayout {
 
     public void setShape(@HintShowcaseDrawer.TargetShape int shape) {
         mShowcaseDrawer.setShape(shape);
+    }
+
+    public void setTargetId(int targetId) {
+        mTargetId = targetId;
+        getRectWithId(mTargetId, mTargetRect);
+        invalidate();
     }
 }
