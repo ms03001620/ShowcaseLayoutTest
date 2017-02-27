@@ -11,6 +11,7 @@ import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.TintTypedArray;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -97,7 +98,7 @@ public class ShowcaseLayout extends FrameLayout {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         //if (mTargetRect.isEmpty()) {
-            getRectWithId(mTargetId, mTargetRect);
+        getRectWithId(mTargetId, mTargetRect);
         //}
         if (mBitmapBuffer == null) {
             mBitmapBuffer = Bitmap.createBitmap(getMeasuredWidth(), getMeasuredHeight(), Bitmap.Config.ARGB_4444);
@@ -108,6 +109,24 @@ public class ShowcaseLayout extends FrameLayout {
         View view = findViewById(resId);
         if (view != null) {
             rect.set(getRect(view));
+            view.addOnAttachStateChangeListener(new OnAttachStateChangeListener() {
+                @Override
+                public void onViewAttachedToWindow(View v) {
+                    Log.v("ShowcaseLayout", "onViewAttachedToWindow:" + v.getId());
+                }
+
+                @Override
+                public void onViewDetachedFromWindow(View v) {
+                    Log.v("ShowcaseLayout", "onViewDetachedFromWindow:" + v.getId());
+
+                    if (v.getId() == mTargetId) {
+                        if (mDisplay) {
+                            mDisplay = false;
+                            invalidate();
+                        }
+                    }
+                }
+            });
         }
     }
 
