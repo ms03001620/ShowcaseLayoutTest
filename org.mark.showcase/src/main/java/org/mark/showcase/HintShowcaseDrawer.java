@@ -16,7 +16,6 @@ import android.graphics.RectF;
 import android.support.annotation.ColorInt;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
-import android.support.annotation.StringDef;
 import android.support.annotation.StringRes;
 import android.text.TextPaint;
 
@@ -64,8 +63,9 @@ public class HintShowcaseDrawer {
     }
 
     private @TargetShape int mTargetShape;
-    private final float mTargetWidth;
-    private final float mTargetHeight;
+
+    private float mBuffWidth;
+    private float mBuffHeight;
 
     private final Paint mBasicPaint;
     private final int mBaseColour;
@@ -92,16 +92,16 @@ public class HintShowcaseDrawer {
                               int hintWidth,
                               @TargetShape int targetShape,
                               float hintTextSize,
-                              int targetWidth,
-                              int targetHeight) {
-        this(context, hintText, hintPosition, 0x80000000, hintWidth, targetShape, hintTextSize, targetWidth, targetHeight);
+                              int buffWidth,
+                              int buffHeight) {
+        this(context, hintText, hintPosition, 0x80000000, hintWidth, targetShape, hintTextSize, buffWidth, buffHeight);
     }
 
     public HintShowcaseDrawer(Context context, String hintText, @TextPosition int hintPosition,
-                              @ColorInt int maskColorRes ,float hintWidth, @TargetShape int targetShape, float hintTextSize, int targetWidth, int targetHeight) {
+                              @ColorInt int maskColorRes ,float hintWidth, @TargetShape int targetShape, float hintTextSize, int buffWidth, int buffHeight) {
         mResources = context.getResources();
-        this.mTargetWidth = targetWidth;
-        this.mTargetHeight = targetHeight;
+        this.mBuffWidth = buffWidth;
+        this.mBuffHeight = buffHeight;
         mTargetPaint = new Paint();
         mTargetPaint.setColor(0xFFFFFF);
         mTargetPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
@@ -143,28 +143,6 @@ public class HintShowcaseDrawer {
         mHintDrawer.setContentPaint(paint);
     }
 
-    public void drawShowcase(Bitmap buffer, float x, float y, float scaleMultiplier) {
-        Canvas bufferCanvas = new Canvas(buffer);
-        mTargetRect.left = x - mTargetWidth / 2f;
-        mTargetRect.right = x + mTargetWidth / 2f;
-        mTargetRect.top = y - mTargetHeight / 2f;
-        mTargetRect.bottom = y + mTargetHeight / 2f;
-
-        mHintDrawer.calculateTextPosition(buffer.getWidth(), mTargetRect);
-        mHintDrawer.draw(bufferCanvas);
-
-        drawTarget(bufferCanvas);
-    }
-
-    public void drawShowcase(Bitmap buffer, Rect rect) {
-        Canvas bufferCanvas = new Canvas(buffer);
-        mTargetRect.set(rect);
-        mHintDrawer.calculateTextPosition(buffer.getWidth(), mTargetRect);
-        mHintDrawer.draw(bufferCanvas);
-        drawTarget(bufferCanvas);
-    }
-
-
     private void drawTarget(Canvas bufferCanvas) {
         RectF lineRectF = new RectF(mTargetRect);
         //虚线set padding
@@ -196,6 +174,28 @@ public class HintShowcaseDrawer {
                 break;
             default:
                 throw new UnsupportedOperationException("Not support this type:" + mTargetShape);
+        }
+    }
+
+
+    public void drawShowcase(Bitmap buffer, Rect rect) {
+        Canvas bufferCanvas = new Canvas(buffer);
+        mTargetRect.set(rect);
+        addBuff();
+        mHintDrawer.calculateTextPosition(buffer.getWidth(), mTargetRect);
+        mHintDrawer.draw(bufferCanvas);
+        drawTarget(bufferCanvas);
+    }
+
+    private void addBuff(){
+        if (mBuffWidth != 0) {
+            mTargetRect.left -= mBuffWidth / 2;
+            mTargetRect.right += mBuffWidth / 2;
+        }
+
+        if (mBuffHeight != 0) {
+            mTargetRect.top -= mBuffHeight / 2;
+            mTargetRect.bottom += mBuffHeight / 2;
         }
     }
 

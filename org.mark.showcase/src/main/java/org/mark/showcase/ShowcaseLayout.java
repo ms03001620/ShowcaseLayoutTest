@@ -63,11 +63,10 @@ public class ShowcaseLayout extends FrameLayout {
 
         final int textBoxMaxWidth = a.getDimensionPixelSize(R.styleable.Showcase_textBoxMaxWidth, 0);
 
-        final int targetWidth = a.getDimensionPixelSize(R.styleable.Showcase_targetWidth, 100);
-        final int targetHeight = a.getDimensionPixelSize(R.styleable.Showcase_targetWidth, 100);
+        final int buffWidth = a.getDimensionPixelSize(R.styleable.Showcase_buffWidth, 0);
+        final int buffHeight = a.getDimensionPixelSize(R.styleable.Showcase_buffHeight, 0);
         mCanceledOnTouchOutside = a.getBoolean(R.styleable.Showcase_canceledOnTouchOutside, true);
         mCanceledOnTouchTarget = a.getBoolean(R.styleable.Showcase_canceledOnTouchTarget, true);
-
 
         mShowcaseDrawer = new HintShowcaseDrawer(context,
                 text == null ? "" : text,
@@ -75,8 +74,8 @@ public class ShowcaseLayout extends FrameLayout {
                 textBoxMaxWidth,
                 parseShape(a.getInt(R.styleable.Showcase_shape, 1)),
                 textSize,
-                targetWidth,
-                targetHeight);
+                buffWidth,
+                buffHeight);
 
         a.recycle();
     }
