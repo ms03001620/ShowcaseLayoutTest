@@ -112,13 +112,10 @@ public class ShowcaseLayout extends FrameLayout {
             view.addOnAttachStateChangeListener(new OnAttachStateChangeListener() {
                 @Override
                 public void onViewAttachedToWindow(View v) {
-                    Log.v("ShowcaseLayout", "onViewAttachedToWindow:" + v.getId());
                 }
 
                 @Override
                 public void onViewDetachedFromWindow(View v) {
-                    Log.v("ShowcaseLayout", "onViewDetachedFromWindow:" + v.getId());
-
                     if (v.getId() == mTargetId) {
                         if (mDisplay) {
                             mDisplay = false;
