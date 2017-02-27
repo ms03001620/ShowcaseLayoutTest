@@ -243,6 +243,10 @@ public class ShowcaseLayout extends FrameLayout {
         mShowcaseDrawer.setShape(shape);
     }
 
+    public void setBuffWidth(int buffWidth) {
+        mShowcaseDrawer.setBuffWidth(buffWidth);
+    }
+
     public void setTargetId(int targetId) {
         mTargetId = targetId;
         getRectWithId(mTargetId, mTargetRect);

@@ -210,6 +210,10 @@ public class HintShowcaseDrawer {
         return path;
     }
 
+    public void setBuffWidth(int buffWidth) {
+        mBuffWidth = buffWidth;
+    }
+
     private float dpToPx(Resources resources, float dp) {
         return Utils.dpToPx(resources, dp);
     }
