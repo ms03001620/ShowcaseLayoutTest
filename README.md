@@ -1,5 +1,14 @@
 # Showcase layout
 
+## Attrs
+
+    showcase:canceledOnTouchOutside="true"
+    showcase:canceledOnTouchTarget="false"
+    showcase:direction="below"
+    showcase:display="true"
+    showcase:shape="rect"
+    showcase:targetId="@+id/text_hello"
+    showcase:text="@string/content"
 
 ## Preview
 ![Demo](https://raw.githubusercontent.com/ms03001620/ShowcaseLayoutTest/dabad7ab99204a06284fa3095ac449d3ee7ae132/app/doc/device-2017-03-09-173234.png)
