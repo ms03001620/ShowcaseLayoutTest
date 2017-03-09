@@ -1,5 +1,13 @@
 # Showcase layout
 
+## Use it like a LAYOUT
+
+<org.mark.showcase.ShowcaseLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:showcase="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
 ## Attrs
 
     showcase:canceledOnTouchOutside="true"
