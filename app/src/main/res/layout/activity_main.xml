@@ -4,12 +4,13 @@
     android:id="@+id/layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    showcase:canceledOnTouchOutside="true"
+    showcase:canceledOnTouchTarget="false"
     showcase:direction="below"
     showcase:display="true"
-    showcase:shape="oval"
-    showcase:canceledOnTouchOutside="false"
-    showcase:targetId="@id/showcase_target_id"
-    showcase:text="@string/content_1">
+    showcase:shape="rect"
+    showcase:targetId="@+id/text_hello"
+    showcase:text="@string/content">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -17,10 +18,8 @@
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
-
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#F00" />
+            android:layout_height="wrap_content" />
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -42,25 +41,9 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="100dp"
                     android:text="open showcase" />
-
-                <Button
-                    android:id="@id/showcase_target_id"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_margin="100dp"
-                    android:text="world" />
             </RelativeLayout>
 
         </FrameLayout>
-
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="40dp"
-            android:src="@drawable/btn_create" />
 
     </RelativeLayout>
 

@@ -7,8 +7,7 @@
     <dimen name="hint_bg_width">300dp</dimen>
     <dimen name="hint_text_size">18sp</dimen>
 
-    <item name="showcase_target_id" type="id"/>
-
+    <item name="showcase_target_id" type="id" />
 
 
 </resources>

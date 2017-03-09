@@ -1,15 +1,11 @@
 package org.mark.showcaselayouttest;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
-import android.widget.RelativeLayout;
-
-import org.mark.showcase.ShowcaseLayout;
 
 public class MainActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -18,25 +14,8 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.text_hello).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Toast.makeText(v.getContext(), "click", Toast.LENGTH_SHORT).show();
-                Log.v("MainActivity", "ddddd");
-                ((ShowcaseLayout)findViewById(R.id.layout)).setDisplay(true);
+                startActivity(new Intent(v.getContext(), DetailActivity.class));
             }
         });
-
-        changePostion();
     }
-
-    private void changePostion() {
-        final View btn = (View) findViewById(R.id.fab);
-        final RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) btn.getLayoutParams();
-        btn.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                lp.setMargins(0,0,0,0);
-                btn.setLayoutParams(lp);
-            }
-        }, 5000);
-    }
-
 }
